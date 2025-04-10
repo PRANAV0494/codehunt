@@ -3,3 +3,4 @@ pandas
 streamlit-lottie
 streamlit-autorefresh
 Pillow
+openpyxl
