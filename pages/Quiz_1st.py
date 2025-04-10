@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import random
+import os
 from datetime import datetime, timedelta
 from streamlit_autorefresh import st_autorefresh
 
@@ -121,7 +122,8 @@ def save_score_with_details(username, answers, questions):
             "Time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         })
     df_user = pd.DataFrame(records)
-    with pd.ExcelWriter(EXCEL_FILE, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+    file_exists = os.path.exists(EXCEL_FILE)  
+    with pd.ExcelWriter(EXCEL_FILE, engine='openpyxl', mode='a' if file_exists else 'w', if_sheet_exists='replace') as writer:
         df_user.to_excel(writer, sheet_name=username, index=False)
 
 def save_result_summary(username, answers, questions):
@@ -134,7 +136,7 @@ def save_result_summary(username, answers, questions):
         updated = pd.concat([existing, new_entry], ignore_index=True)
     except:
         updated = new_entry
-    with pd.ExcelWriter(EXCEL_FILE, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+    file_exists = os.path.exists(EXCEL_FILE)  with pd.ExcelWriter(EXCEL_FILE, engine='openpyxl', mode='a' if file_exists else 'w', if_sheet_exists='replace') as writer:
         updated.to_excel(writer, sheet_name="Results", index=False)
 
 def save_draft_answer(q_index, question_text, selected_answer, username):
